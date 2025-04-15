@@ -1,3 +1,4 @@
+const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 
 module.exports.getUsers = (req, res) => {
@@ -33,25 +34,27 @@ module.exports.getUser = (req, res) => {
 };
 
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+  const { name, about, avatar, email, password } = req.body;
 
-  if (!name && !about && !avatar) {
+  if (!name && !about && !avatar && !email && !password) {
     return res.status(400).send({
       message: "Dados inválidos fornecidos",
     });
   }
 
-  return User.create({ name, about, avatar })
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      console.log(err);
-      if (err.name === "ValidationError") {
-        return res
-          .status(400)
-          .send({ message: "Dados inválidos fornecidos para criar usuário" });
-      }
-      return res.status(500).send({ message: "Ocorreu um erro no servidor" });
-    });
+  return bcrypt.hash(password, 10).then((hash) => {
+    User.create({ name, about, avatar, email, password: hash })
+      .then((user) => res.send({ data: user }))
+      .catch((err) => {
+        console.log(err);
+        if (err.name === "ValidationError") {
+          return res
+            .status(400)
+            .send({ message: "Dados inválidos fornecidos para criar usuário" });
+        }
+        return res.status(500).send({ message: "Ocorreu um erro no servidor" });
+      });
+  });
 };
 
 module.exports.updateUser = (req, res) => {
