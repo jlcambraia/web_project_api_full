@@ -1,25 +1,23 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      default: "Jacques Cousteau",
+      required: true,
       minlength: 2,
       maxlength: 30,
     },
     about: {
       type: String,
-      default: "Explorer",
+      required: true,
       minlength: 2,
       maxlength: 30,
     },
     avatar: {
       type: String,
-      default:
-        "https://practicum-content.s3.us-west-1.amazonaws.com/resources/moved_avatar_1604080799.jpg",
+      required: true,
       validate: {
         validator: (v) => {
           return /(http:\/\/|https:\/\/)(www\.)?(.+)(\/)?(#)?/gi.test(v);
@@ -42,22 +40,5 @@ const userSchema = new mongoose.Schema(
   },
   { versionKey: false }
 );
-
-userSchema.statics.findUserByCredentials = function findUserByCredentials(
-  email,
-  password
-) {
-  return this.findOne({ email }).then((user) => {
-    if (!user) {
-      return Promise.reject(new Error("Email ou Senha inválidos"));
-    }
-    return bcrypt.compare(password, user.password).then((matched) => {
-      if (!matched) {
-        return Promise.reject(new Error("Email ou Senha inválidos"));
-      }
-      return user;
-    });
-  });
-};
 
 module.exports = mongoose.model("user", userSchema);
