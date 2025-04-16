@@ -16,14 +16,6 @@ mongoose.connect("mongodb://127.0.0.1:27017/aroundb", {
   useNewUrlParser: true,
 });
 
-// Solução temporário de autorização
-app.use((req, res, next) => {
-  req.user = {
-    _id: "67ee954a2ce144ce0a84f624",
-  };
-  next();
-});
-
 app.post("/signin", login);
 app.post("/signup", createUser);
 
