@@ -35,13 +35,23 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndDelete(req.params.cardId)
+  Card.findById(req.params.cardId)
     .orFail(() => {
       const error = new Error("Cartão não encontrado");
       error.name = "DocumentNotFoundError";
       throw error;
     })
-    .then((card) => res.send({ data: card }))
+    .then((card) => {
+      if (card.owner.toString() !== req.user._id) {
+        return res
+          .status(403)
+          .send({ message: "Você não tem permissão para excluir este cartão" });
+      }
+
+      return Card.findByIdAndDelete(req.params.cardId).then((deletedCard) =>
+        res.send({ data: deletedCard })
+      );
+    })
     .catch((err) => {
       console.log(err);
       if (err.name === "CastError") {
