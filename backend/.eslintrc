@@ -12,6 +12,11 @@
     ],
     "comma-dangle": "off",
     "arrow-body-style": "off",
-    "object-curly-newline": ["error", { "multiline": true, "consistent": true }]
+    "object-curly-newline": [
+      "error",
+      { "multiline": true, "consistent": true }
+    ],
+    "implicit-arrow-linebreak": "off",
+    "function-paren-newline": "off"
   }
 }
