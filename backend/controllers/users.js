@@ -136,3 +136,23 @@ module.exports.login = (req, res) => {
       res.status(401).send({ message: "Email ou Senha inválidos" });
     });
 };
+
+module.exports.getCurrentUser = (req, res) => {
+  User.findById(req.user._id)
+    .orFail(() => {
+      const error = new Error("Usuário não encontrado");
+      error.name = "DocumentNotFoundError";
+      throw error;
+    })
+    .then((user) => res.send({ data: user }))
+    .catch((err) => {
+      console.log(err);
+      if (err.name === "CastError") {
+        return res.status(400).send({ message: "ID de usuário inválido" });
+      }
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(404).send({ message: "Usuário não encontrado" });
+      }
+      return res.status(500).send({ message: "Ocorreu um erro no servidor" });
+    });
+};
