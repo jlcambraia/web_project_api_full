@@ -1,8 +1,18 @@
+import { getToken } from "./token";
+
 class Api {
-  constructor({ baseUrl, token, makeRequest }) {
+  constructor({ baseUrl, headers, makeRequest }) {
     this._baseUrl = baseUrl;
-    this._token = token;
+    this._headers = headers;
     this._makeRequest = makeRequest;
+  }
+
+  _getHeaders() {
+    const token = getToken();
+    return {
+      ...this._getHeaders,
+      authorization: token ? `Bearer ${token}` : "",
+    };
   }
 
   _handleServerResponse(res) {
@@ -15,27 +25,20 @@ class Api {
 
   getUserInfo() {
     return this._makeRequest(`${this._baseUrl}/users/me`, {
-      headers: {
-        authorization: this._token,
-      },
+      headers: this._getHeaders(),
     }).then(this._handleServerResponse);
   }
 
   getCardsInfo() {
     return this._makeRequest(`${this._baseUrl}/cards`, {
-      headers: {
-        authorization: this._token,
-      },
+      headers: this._getHeaders(),
     }).then(this._handleServerResponse);
   }
 
   setUserInfo(inputNameValue, inputAboutValue) {
     return this._makeRequest(`${this._baseUrl}/users/me`, {
       method: "PATCH",
-      headers: {
-        authorization: this._token,
-        "Content-Type": "application/json",
-      },
+      headers: this._getHeaders(),
       body: JSON.stringify({
         name: inputNameValue,
         about: inputAboutValue,
@@ -46,10 +49,7 @@ class Api {
   addNewCard(inputTitleValue, inputLinkValue) {
     return this._makeRequest(`${this._baseUrl}/cards`, {
       method: "POST",
-      headers: {
-        authorization: this._token,
-        "Content-Type": "application/json",
-      },
+      headers: this._getHeaders(),
       body: JSON.stringify({
         name: inputTitleValue,
         link: inputLinkValue,
@@ -60,29 +60,21 @@ class Api {
   updateLikeState(cardId, isLiked) {
     return this._makeRequest(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: isLiked ? "DELETE" : "PUT",
-      headers: {
-        authorization: this._token,
-        "Content-Type": "application/json",
-      },
+      headers: this._getHeaders(),
     }).then(this._handleServerResponse);
   }
 
   deleteCard(cardId) {
     return this._makeRequest(`${this._baseUrl}/cards/${cardId}`, {
       method: "DELETE",
-      headers: {
-        authorization: this._token,
-      },
+      headers: this._getHeaders(),
     }).then(this._handleServerResponse);
   }
 
   changeProfileImage(data) {
     return this._makeRequest(`${this._baseUrl}/users/me/avatar`, {
       method: "PATCH",
-      headers: {
-        authorization: this._token,
-        "Content-Type": "application/json",
-      },
+      headers: this._getHeaders(),
       body: JSON.stringify({
         avatar: data.avatar,
       }),
@@ -93,7 +85,9 @@ class Api {
 // Configuração para API
 const apiConfig = {
   baseUrl: "https://around-api.pt-br.tripleten-services.com/v1",
-  token: "a97c4c63-ce40-4267-993b-56ebee3b0bfe",
+  headers: {
+    "Content-Type": "application/json",
+  },
   makeRequest: (...args) => fetch(...args),
 };
 
