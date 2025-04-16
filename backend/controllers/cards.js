@@ -47,7 +47,7 @@ module.exports.deleteCard = (req, res) => {
       if (err.name === "CastError") {
         return res.status(400).send({ message: "ID de cartão inválido" });
       }
-      if (err.name === "DocumentNotFundError") {
+      if (err.name === "DocumentNotFoundError") {
         return res.status(404).send({ message: "Cartão não encontrado" });
       }
       return res.status(500).send({ message: "Ocorreu um erro no servidor" });
@@ -73,7 +73,7 @@ module.exports.likeCard = (req, res) => {
       if (err.name === "CastError") {
         return res.status(400).send({ message: "ID de cartão inválido" });
       }
-      if (err.name === "DocumentNotFundError") {
+      if (err.name === "DocumentNotFoundError") {
         return res.status(404).send({ message: "Cartão não encontrado" });
       }
       return res.status(500).send({ message: "Ocorreu um erro no servidor" });
@@ -99,7 +99,7 @@ module.exports.dislikeCard = (req, res) => {
       if (err.name === "CastError") {
         return res.status(400).send({ message: "ID de cartão inválido" });
       }
-      if (err.name === "DocumentNotFundError") {
+      if (err.name === "DocumentNotFoundError") {
         return res.status(404).send({ message: "Cartão não encontrado" });
       }
       return res.status(500).send({ message: "Ocorreu um erro no servidor" });
