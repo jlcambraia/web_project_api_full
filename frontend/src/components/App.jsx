@@ -26,7 +26,7 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import ProtectedRoute from "./ProtectedRout";
 
 import * as auth from "../utils/auth";
-import { setToken, getToken } from "../utils/token";
+import { setToken, getToken, removeToken } from "../utils/token";
 
 function App() {
   const [popup, setPopup] = useState(null);
@@ -41,31 +41,50 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState({ email: "" });
   const [isRegistered, setIsRegistered] = useState(null);
+  const [isChecking, setIsChecking] = useState(true);
 
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    api
-      .getUserInfo()
-      .then((currentUser) => {
-        setCurrentUser(currentUser);
+    const token = getToken();
+
+    if (!token) {
+      setIsChecking(false);
+      return;
+    }
+
+    auth
+      .getUserInfo(token)
+      .then((data) => {
+        if (data && data.data) {
+          setIsLoggedIn(true);
+          setUserData({ email: data.data.email });
+        }
       })
       .catch((err) => {
-        setError(err.message || "Erro ao carregar informações do usuário");
+        console.log("Erro ao validar token:", err);
+        removeToken();
+        setIsRegistered(false);
+      })
+      .finally(() => {
+        setIsChecking(false);
       });
   }, []);
 
   useEffect(() => {
-    api
-      .getCardsInfo()
-      .then((cards) => {
-        setCards(cards);
-      })
-      .catch((err) => {
-        setError(err.message || "Erro ao carregar cards");
-      });
-  }, []);
+    if (isLoggedIn) {
+      Promise.all([api.getUserInfo(), api.getCardsInfo()])
+        .then(([userData, cardsData]) => {
+          setCurrentUser(userData);
+          setCards(cardsData);
+        })
+        .catch((err) => {
+          console.log("Erro ao carregar dados iniciais:", err);
+          setError(err.message || "Erro ao carregar dados");
+        });
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
     if (isRegistered !== null) {
@@ -76,24 +95,6 @@ function App() {
       handleOpenPopup(infoTooltipPopup);
     }
   }, [isRegistered]);
-
-  useEffect(() => {
-    const token = getToken();
-
-    if (!token) {
-      return;
-    }
-
-    auth
-      .getUserInfo(token)
-      .then((data) => {
-        setIsLoggedIn(true);
-        setUserData(data.data.email);
-      })
-      .catch(() => {
-        setIsRegistered(false);
-      });
-  }, []);
 
   function handleOpenPopup(popupData) {
     setSaving(false);
@@ -201,7 +202,7 @@ function App() {
       .then((data) => {
         if (data.token) {
           setToken(data.token);
-          setUserData(email);
+          setUserData({ email });
           setIsLoggedIn(true);
           const redirectPath = location.state?.from?.pathname || "/";
           navigate(redirectPath);
@@ -211,6 +212,17 @@ function App() {
         setIsRegistered(false);
       });
   };
+
+  const handleLogout = () => {
+    removeToken();
+    setIsLoggedIn(false);
+    setUserData({ email: "" });
+    navigate("/signin");
+  };
+
+  if (isChecking) {
+    return <div className="page">Carregando...</div>;
+  }
 
   return (
     <CurrentUserContext.Provider
@@ -232,6 +244,7 @@ function App() {
                     userData={userData}
                     isLoggedIn={isLoggedIn}
                     setIsLoggedIn={setIsLoggedIn}
+                    onLogout={handleLogout}
                   />
                   <Main
                     onOpenPopup={handleOpenPopup}
