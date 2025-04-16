@@ -1,70 +1,43 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+const BadRequestError = require("../errors/bad-request-err");
+const NotFoundError = require("../errors/not-found-err");
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch((err) => {
-      console.log(err);
-      if (err.name === "CastError") {
-        return res.status(400).send({ message: "Dados inválidos fornecidos" });
-      }
-      return res.status(500).send({ message: "Ocorreu um erro no servidor" });
-    });
+    .catch(next);
 };
 
-module.exports.getUser = (req, res) => {
+module.exports.getUser = (req, res, next) => {
   User.findById(req.params.userId)
     .orFail(() => {
-      const error = new Error("Usuário não encontrado");
-      error.name = "DocumentNotFoundError";
-      throw error;
+      throw new NotFoundError("Usuário não encontrado");
     })
     .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      console.log(err);
-      if (err.name === "CastError") {
-        return res.status(400).send({ message: "ID de usuário inválido" });
-      }
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: "Usuário não encontrado" });
-      }
-      return res.status(500).send({ message: "Ocorreu um erro no servidor" });
-    });
+    .catch(next);
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
 
   if (!name && !about && !avatar && !email && !password) {
-    return res.status(400).send({
-      message: "Dados inválidos fornecidos",
-    });
+    throw new BadRequestError("Dados inválidos fornecidos");
   }
 
   return bcrypt.hash(password, 10).then((hash) => {
     User.create({ name, about, avatar, email, password: hash })
       .then((user) => res.send({ data: user }))
-      .catch((err) => {
-        console.log(err);
-        if (err.name === "ValidationError") {
-          return res
-            .status(400)
-            .send({ message: "Dados inválidos fornecidos para criar usuário" });
-        }
-        return res.status(500).send({ message: "Ocorreu um erro no servidor" });
-      });
+      .catch(next);
   });
 };
 
-module.exports.updateUser = (req, res) => {
+module.exports.updateUser = (req, res, next) => {
   const { name, about } = req.body;
 
   if (!name && !about) {
-    return res.status(400).send({
-      message: "Dados inválidos fornecidos",
-    });
+    throw new BadRequestError("Dados inválidos fornecidos");
   }
 
   return User.findByIdAndUpdate(
@@ -76,27 +49,17 @@ module.exports.updateUser = (req, res) => {
     }
   )
     .orFail(() => {
-      const error = new Error("Usuário não encontrado");
-      error.name = "DocumentNotFoundError";
-      throw error;
+      throw new NotFoundError("Usuário não encontrado");
     })
     .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      console.log(err);
-      if (err.name === "CastError") {
-        return res.status(400).send({ message: "Dados inválidos fornecidos" });
-      }
-      return res.status(500).send({ message: "Ocorreu um erro no servidor" });
-    });
+    .catch(next);
 };
 
-module.exports.updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
   if (!avatar) {
-    return res.status(400).send({
-      message: "Dados inválidos fornecidos",
-    });
+    throw new BadRequestError("Dados inválidos fornecidos");
   }
 
   return User.findByIdAndUpdate(
@@ -108,21 +71,13 @@ module.exports.updateAvatar = (req, res) => {
     }
   )
     .orFail(() => {
-      const error = new Error("Usuário não encontrado");
-      error.name = "DocumentNotFoundError";
-      throw error;
+      throw new NotFoundError("Usuário não encontrado");
     })
     .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      console.log(err);
-      if (err.name === "CastError") {
-        return res.status(400).send({ message: "Dados inválidos fornecidos" });
-      }
-      return res.status(500).send({ message: "Ocorreu um erro no servidor" });
-    });
+    .catch(next);
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
@@ -132,27 +87,14 @@ module.exports.login = (req, res) => {
       });
       res.send({ token });
     })
-    .catch(() => {
-      res.status(401).send({ message: "Email ou Senha inválidos" });
-    });
+    .catch(next);
 };
 
-module.exports.getCurrentUser = (req, res) => {
+module.exports.getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .orFail(() => {
-      const error = new Error("Usuário não encontrado");
-      error.name = "DocumentNotFoundError";
-      throw error;
+      throw new NotFoundError("Usuário não encontrado");
     })
     .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      console.log(err);
-      if (err.name === "CastError") {
-        return res.status(400).send({ message: "ID de usuário inválido" });
-      }
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: "Usuário não encontrado" });
-      }
-      return res.status(500).send({ message: "Ocorreu um erro no servidor" });
-    });
+    .catch(next);
 };
