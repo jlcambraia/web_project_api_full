@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const errorHandler = (err, req, res) => {
+const errorHandler = (err, req, res, next) => {
   let { statusCode = 500, message } = err;
 
   if (err instanceof mongoose.Error.ValidationError) {
