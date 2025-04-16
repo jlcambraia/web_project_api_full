@@ -3,18 +3,11 @@ import openMenu from "../../images/header__menu.svg";
 import closeMenu from "../../images/close__icon.svg";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { removeToken } from "../../utils/token";
 
-export default function Header({ isLoggedIn, setIsLoggedIn, title, userData }) {
+export default function Header({ isLoggedIn, onLogout, title, userData }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navigate = useNavigate();
-
-  function signOut() {
-    removeToken();
-    navigate("/signin");
-    setIsLoggedIn(false);
-  }
 
   function buttonNavigate() {
     const headerButton = document.querySelector(".header__button");
@@ -37,7 +30,7 @@ export default function Header({ isLoggedIn, setIsLoggedIn, title, userData }) {
               {userData}
             </button>
             <button
-              onClick={signOut}
+              onClick={onLogout}
               className="header__button header__button_logout"
             >
               Sair
@@ -59,7 +52,7 @@ export default function Header({ isLoggedIn, setIsLoggedIn, title, userData }) {
                 {userData}
               </button>
               <button
-                onClick={signOut}
+                onClick={onLogout}
                 className="header__button header__button_logout"
               >
                 Sair
