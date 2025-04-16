@@ -24,10 +24,13 @@ app.use((req, res, next) => {
   next();
 });
 
+app.post("/signin", login);
+app.post("/signup", createUser);
+
+app.use(auth);
+
 app.use("/users", usersRouter);
 app.use("/cards", cardRouter);
-app.post("/signin", login);
-app.post("/signup", auth, createUser);
 
 const handlePageNotFound = (req, res) => {
   res.status(404).json({ message: "A solicitação não foi encontrada" });
