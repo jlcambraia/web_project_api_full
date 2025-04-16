@@ -17,6 +17,7 @@
       { "multiline": true, "consistent": true }
     ],
     "implicit-arrow-linebreak": "off",
-    "function-paren-newline": "off"
+    "function-paren-newline": "off",
+    "no-unused-vars": ["error", { "argsIgnorePattern": "next" }]
   }
 }
