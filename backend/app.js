@@ -8,6 +8,8 @@ const auth = require("./middleware/auth");
 const NotFoundError = require("./errors/not-found-err");
 const errorHandler = require("./errors/error-handler");
 
+const { errors } = require("celebrate");
+
 const { PORT = 3000 } = process.env;
 
 const app = express();
@@ -27,10 +29,11 @@ app.use(auth);
 app.use("/users", usersRouter);
 app.use("/cards", cardRouter);
 
-app.use((err, req, res, next) => {
+app.use("*", (req, res, next) => {
   next(new NotFoundError("A solicitação não foi encontrada"));
 });
 
+app.use(errors());
 app.use(errorHandler);
 
 app.listen(PORT, () => {
