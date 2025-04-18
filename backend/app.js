@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 const { errors } = require("celebrate");
 const usersRouter = require("./routes/users");
 const cardRouter = require("./routes/cards");
@@ -14,6 +15,9 @@ const { requestLogger, errorLogger } = require("./middleware/logger");
 const { PORT = 3000 } = process.env;
 
 const app = express();
+
+app.use(cors());
+app.options("*", cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
