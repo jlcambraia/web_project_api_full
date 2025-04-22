@@ -89,6 +89,7 @@
   border-radius: 2px;
   margin-bottom: 15px;
   background-color: #fff;
+  height: 47px;
 }
 
 .register__button:hover {
@@ -100,6 +101,7 @@
   border: 1px solid #c4c4c4;
   color: #c4c4c4;
   cursor: not-allowed;
+  height: 47px;
 }
 
 .register__sign-up-text {
