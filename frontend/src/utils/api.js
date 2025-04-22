@@ -84,7 +84,7 @@ class Api {
 
 // Configuração para API
 const apiConfig = {
-  baseUrl: "https://around-api.pt-br.tripleten-services.com/v1",
+  baseUrl: "https://api.around-full.mooo.com",
   headers: {
     "Content-Type": "application/json",
   },
