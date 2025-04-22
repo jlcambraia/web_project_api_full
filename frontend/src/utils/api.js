@@ -10,7 +10,7 @@ class Api {
   _getHeaders() {
     const token = getToken();
     return {
-      ...this._getHeaders,
+      ...this._headers,
       authorization: token ? `Bearer ${token}` : "",
     };
   }
