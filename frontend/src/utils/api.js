@@ -19,7 +19,7 @@ class Api {
     return res.ok
       ? res.json()
       : Promise.reject(
-          `Erro ao carregar informações do usuário: ${res.status}`
+          `Lamentamos, mas infelizmente não podemos seguir com o solicitado: ${res.status}`
         );
   }
 
