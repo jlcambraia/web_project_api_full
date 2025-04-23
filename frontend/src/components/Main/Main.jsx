@@ -14,18 +14,12 @@ import Card from "./components/Card/Card";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
 export default function Main(props) {
-  const {
-    onOpenPopup,
-    cards,
-    onCardLike,
-    onCardDelete,
-    onAddPlaceSubmit,
-    error,
-  } = props;
+  const { onOpenPopup, onCardLike, onCardDelete, onAddPlaceSubmit, error } =
+    props;
+
+  const { currentUser, cards } = useContext(CurrentUserContext);
 
   const hasCards = cards && cards.length > 0;
-
-  const { currentUser } = useContext(CurrentUserContext);
 
   const editProfilePopup = {
     title: "Editar perfil",
@@ -58,7 +52,7 @@ export default function Main(props) {
           onClick={() => onOpenPopup(editAvatarPopup)}
         >
           <img
-            src={currentUser.avatar}
+            src={currentUser.data.avatar}
             alt="Placeholder para Foto de Perfil do Usuário"
             className="profile__picture"
           />
@@ -71,7 +65,7 @@ export default function Main(props) {
 
         <div className="profile__user-info">
           <div className="profile__user-container">
-            <h1 className="profile__user-name">{currentUser.name}</h1>
+            <h1 className="profile__user-name">{currentUser.data.name}</h1>
             <button
               className="profile__edit-button"
               onClick={() => onOpenPopup(editProfilePopup)}
@@ -84,7 +78,7 @@ export default function Main(props) {
             </button>
           </div>
 
-          <p className="profile__user-about">{currentUser.about}</p>
+          <p className="profile__user-about">{currentUser.data.about}</p>
         </div>
         <button
           className="profile__add-button"
@@ -98,23 +92,23 @@ export default function Main(props) {
         </button>
       </section>
       <section className="grid">
-        {!hasCards ? (
-          <div className="grid__without-cards">
-            <p className="grid__without-cards-text">Não há nenhum card</p>
-          </div>
-        ) : (
+        {hasCards ? (
           <ul className="grid__card-container">
             {cards.map((card) => (
               <Card
                 key={card._id}
                 card={card}
-                isLiked={card.isLiked}
+                isLiked={card.likes.some((id) => id === currentUser._id)}
                 onClick={onOpenPopup}
                 onCardLike={onCardLike}
                 onCardDelete={onCardDelete}
               />
             ))}
           </ul>
+        ) : (
+          <div className="grid__without-cards">
+            <p className="grid__without-cards-text">Não há nenhum card</p>
+          </div>
         )}
       </section>
     </main>
