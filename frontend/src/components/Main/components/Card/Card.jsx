@@ -4,8 +4,14 @@ import likeIcon from "../../../../images/like__icon.svg";
 import ImagePopup from "../Popup/components/ImagePopup/ImagePopup";
 import DeleteConfirmation from "../Popup/components/DeleteConfirmation/DeleteConfirmation";
 
+import { CurrentUserContext } from "../../../../contexts/CurrentUserContext";
+
+import { useContext } from "react";
+
 export default function Card(props) {
   const { card, onClick, onCardLike, onCardDelete, saving } = props;
+
+  const { currentUser } = useContext(CurrentUserContext);
 
   const imagePopup = {
     children: <ImagePopup card={card} />,
@@ -23,7 +29,9 @@ export default function Card(props) {
   };
 
   const cardLikeButtonClassName = `grid__like-icon ${
-    card.isLiked ? "grid__like-icon_active" : ""
+    card.likes.some((like) => like._id === currentUser._id)
+      ? "grid__like-icon_active"
+      : ""
   }`;
 
   function handleLikeClick() {
