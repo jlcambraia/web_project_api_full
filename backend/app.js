@@ -22,7 +22,7 @@ app.options("*", cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-mongoose.connect("mongodb://34.169.59.66:27017/aroundb", {
+mongoose.connect("mongodb://127.0.0.1:27017/aroundb", {
   useNewUrlParser: true,
 });
 
