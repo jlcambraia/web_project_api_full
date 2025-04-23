@@ -1,11 +1,15 @@
 import logo from "../../images/logo.svg";
 import openMenu from "../../images/header__menu.svg";
 import closeMenu from "../../images/close__icon.svg";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Header({ isLoggedIn, onLogout, title, userData }) {
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
+
+export default function Header({ isLoggedIn, onLogout, title }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const { currentUser } = useContext(CurrentUserContext);
 
   const navigate = useNavigate();
 
@@ -27,7 +31,7 @@ export default function Header({ isLoggedIn, onLogout, title, userData }) {
         <div className="header__mobile-menu">
           <div className="header__mobile-menu-content">
             <button className="header__button header__button_profile">
-              {userData}
+              {currentUser.data.email}
             </button>
             <button
               onClick={onLogout}
@@ -49,7 +53,7 @@ export default function Header({ isLoggedIn, onLogout, title, userData }) {
           <>
             <div className="header__buttons header__buttons_mobile-hidden">
               <button className="header__button header__button_profile">
-                {userData}
+                {currentUser.data.email}
               </button>
               <button
                 onClick={onLogout}
