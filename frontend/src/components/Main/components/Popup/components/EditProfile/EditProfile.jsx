@@ -5,8 +5,8 @@ export default function EditProfile() {
   const userContext = useContext(CurrentUserContext);
   const { currentUser, handleUpdateUser, saving } = userContext;
 
-  const [name, setName] = useState(currentUser.name);
-  const [about, setAbout] = useState(currentUser.about);
+  const [name, setName] = useState(currentUser.data.name);
+  const [about, setAbout] = useState(currentUser.data.about);
   const [errors, setErrors] = useState({ name: "", about: "" });
   const [isEdited, setIsEdited] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
