@@ -60,7 +60,8 @@ function App() {
     api
       .getCardsInfo()
       .then((cards) => {
-        setCards(cards);
+        const updatedCards = cards.data.reverse();
+        setCards(updatedCards);
       })
       .catch((err) => {
         setError(err.message || "Erro ao carregar cards");
@@ -88,7 +89,7 @@ function App() {
       .getUserInfo(token)
       .then((data) => {
         setIsLoggedIn(true);
-        setUserData(data.data.email);
+        setUserData(data.email);
       })
       .catch(() => {
         setIsRegistered(false);
@@ -111,16 +112,20 @@ function App() {
   }
 
   async function handleCardLike(card) {
-    const isLiked = card.isLiked;
+    console.log("este é o card", card);
+    const isLiked = card.likes.some((id) => id === currentUser._id);
+    console.log("Card está com like?", isLiked);
+    console.log("este é o card._id", card._id);
 
     await api
       .updateLikeState(card._id, isLiked)
       .then((newCard) => {
-        setCards((state) =>
-          state.map((currentCard) =>
-            currentCard._id === card._id ? newCard : currentCard
-          )
-        );
+        setCards((state) => {
+          console.log("este é o state", state),
+            state.map((currentCard) =>
+              currentCard._id === card._id ? newCard.data : currentCard
+            );
+        });
       })
       .catch((err) => setError(err));
   }
@@ -173,12 +178,16 @@ function App() {
     (async () => {
       await api
         .addNewCard(data.name, data.link)
-        .then((newCard) => {
-          setCards([newCard, ...cards]);
+        .then((response) => {
+          const newCard = response.data ? response.data : response;
+          setCards((prevCards) => [newCard, ...prevCards]);
           setPopup(null);
         })
         .catch((err) => {
           setError(err);
+        })
+        .finally(() => {
+          setSaving(false);
         });
     })();
   };
@@ -225,6 +234,7 @@ function App() {
         handleUpdateUser,
         onUpdateAvatar,
         saving,
+        cards,
       }}
     >
       <Routes>
@@ -235,7 +245,6 @@ function App() {
               <div className="body">
                 <div className="page">
                   <Header
-                    userData={userData}
                     isLoggedIn={isLoggedIn}
                     setIsLoggedIn={setIsLoggedIn}
                     onLogout={handleLogout}
@@ -244,7 +253,6 @@ function App() {
                     onOpenPopup={handleOpenPopup}
                     onClosePopup={handleClosePopup}
                     popup={popup}
-                    cards={cards}
                     onCardLike={handleCardLike}
                     onCardDelete={handleCardDelete}
                     onAddPlaceSubmit={handleAddPlaceSubmit}
