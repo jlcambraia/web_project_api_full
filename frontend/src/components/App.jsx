@@ -112,19 +112,15 @@ function App() {
   }
 
   async function handleCardLike(card) {
-    console.log("este é o card", card);
-    const isLiked = card.likes.some((id) => id === currentUser._id);
-    console.log("Card está com like?", isLiked);
-    console.log("este é o card._id", card._id);
+    const isLiked = card.likes.some((like) => like._id === currentUser._id);
 
     await api
       .updateLikeState(card._id, isLiked)
       .then((newCard) => {
         setCards((state) => {
-          console.log("este é o state", state),
-            state.map((currentCard) =>
-              currentCard._id === card._id ? newCard.data : currentCard
-            );
+          state.map((currentCard) =>
+            currentCard._id === card._id ? newCard.data : currentCard
+          );
         });
       })
       .catch((err) => setError(err));
