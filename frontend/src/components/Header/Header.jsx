@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
-export default function Header({ isLoggedIn, onLogout, title }) {
+export default function Header({ isLoggedIn, onLogout, title, userData }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { currentUser } = useContext(CurrentUserContext);
@@ -25,13 +25,15 @@ export default function Header({ isLoggedIn, onLogout, title }) {
     setIsMenuOpen(!isMenuOpen);
   }
 
+  const emailToDisplay = userData?.email || currentUser?.data?.email || "";
+
   return (
     <>
       {isLoggedIn && isMenuOpen && (
         <div className="header__mobile-menu">
           <div className="header__mobile-menu-content">
             <button className="header__button header__button_profile">
-              {currentUser.data.email}
+              {emailToDisplay}
             </button>
             <button
               onClick={onLogout}
@@ -53,7 +55,7 @@ export default function Header({ isLoggedIn, onLogout, title }) {
           <>
             <div className="header__buttons header__buttons_mobile-hidden">
               <button className="header__button header__button_profile">
-                {currentUser.data.email}
+                {emailToDisplay}
               </button>
               <button
                 onClick={onLogout}
