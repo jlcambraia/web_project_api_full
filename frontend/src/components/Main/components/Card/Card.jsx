@@ -12,7 +12,7 @@ export default function Card(props) {
   const { card, onClick, onCardLike, onCardDelete, saving } = props;
   const { currentUser } = useContext(CurrentUserContext);
 
-  const isLiked = card.likes.some((like) => like._id === currentUser._id);
+  const hasLikes = card.likes && card.likes.length > 0;
 
   const imagePopup = {
     children: <ImagePopup card={card} />,
@@ -29,7 +29,7 @@ export default function Card(props) {
     ),
   };
 
-  const cardLikeButtonClassName = ` ${isLiked ? "grid__like-icon_active" : ""}`;
+  const cardLikeButtonClassName = `${hasLikes ? "grid__like-icon_active" : ""}`;
 
   function handleLikeClick() {
     onCardLike(card);
