@@ -3,6 +3,7 @@ import { useContext, useEffect } from "react";
 import avatarIcon from "../../images/profile__icon.png";
 import editIcon from "../../images/edit__icon.svg";
 import addIcon from "../../images/add__icon.svg";
+import avatarPlaceholder from "../../images/profile__placeholder.png";
 
 import EditProfile from "./components/Popup/components/EditProfile/EditProfile";
 import NewCard from "./components/Popup/components/NewCard/NewCard";
@@ -20,6 +21,10 @@ export default function Main(props) {
   const { currentUser, cards } = useContext(CurrentUserContext);
 
   const hasCards = cards && cards.length > 0;
+
+  const userAvatar = currentUser?.data?.avatar || avatarPlaceholder;
+  const userName = currentUser?.data?.name || "Carregando...";
+  const userAbout = currentUser?.data?.about || "Carregando...";
 
   const editProfilePopup = {
     title: "Editar perfil",
@@ -52,7 +57,7 @@ export default function Main(props) {
           onClick={() => onOpenPopup(editAvatarPopup)}
         >
           <img
-            src={currentUser.data.avatar}
+            src={userAvatar}
             alt="Placeholder para Foto de Perfil do Usuário"
             className="profile__picture"
           />
@@ -65,7 +70,7 @@ export default function Main(props) {
 
         <div className="profile__user-info">
           <div className="profile__user-container">
-            <h1 className="profile__user-name">{currentUser.data.name}</h1>
+            <h1 className="profile__user-name">{userName}</h1>
             <button
               className="profile__edit-button"
               onClick={() => onOpenPopup(editProfilePopup)}
@@ -78,7 +83,7 @@ export default function Main(props) {
             </button>
           </div>
 
-          <p className="profile__user-about">{currentUser.data.about}</p>
+          <p className="profile__user-about">{userAbout}</p>
         </div>
         <button
           className="profile__add-button"
