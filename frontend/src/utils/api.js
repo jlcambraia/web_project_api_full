@@ -19,7 +19,9 @@ class Api {
     return res.ok
       ? res.json()
       : Promise.reject(
-          `Lamentamos, mas infelizmente não podemos seguir com o solicitado: ${res.status}`
+          res.status === 403
+            ? "Você não tem permissão para excluir um card que não criou."
+            : `Lamentamos, mas infelizmente não podemos seguir com o solicitado: ${res.status}`
         );
   }
 
