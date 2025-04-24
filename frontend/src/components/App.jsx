@@ -36,6 +36,12 @@ function App() {
     avatar: avatarPlaceholder,
     name: "Carregando...",
     about: "Carregando...",
+    data: {
+      avatar: avatarPlaceholder,
+      name: "Carregando...",
+      about: "Carregando...",
+      email: "",
+    },
   });
   const [saving, setSaving] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -45,7 +51,7 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
+  const loadUserData = () => {
     api
       .getUserInfo()
       .then((currentUser) => {
@@ -54,9 +60,7 @@ function App() {
       .catch((err) => {
         setError(err.message || "Erro ao carregar informações do usuário");
       });
-  }, []);
 
-  useEffect(() => {
     api
       .getCardsInfo()
       .then((cards) => {
@@ -66,7 +70,13 @@ function App() {
       .catch((err) => {
         setError(err.message || "Erro ao carregar cards");
       });
-  }, []);
+  };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      loadUserData();
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
     if (isRegistered !== null) {
@@ -89,7 +99,7 @@ function App() {
       .getUserInfo(token)
       .then((data) => {
         setIsLoggedIn(true);
-        setUserData(data.email);
+        setUserData({ email: data.email });
       })
       .catch(() => {
         setIsRegistered(false);
@@ -208,7 +218,7 @@ function App() {
       .then((data) => {
         if (data.token) {
           setToken(data.token);
-          setUserData(email);
+          setUserData({ email });
           setIsLoggedIn(true);
           const redirectPath = location.state?.from?.pathname || "/";
           navigate(redirectPath);
@@ -246,6 +256,7 @@ function App() {
                     isLoggedIn={isLoggedIn}
                     setIsLoggedIn={setIsLoggedIn}
                     onLogout={handleLogout}
+                    userData={userData}
                   />
                   <Main
                     onOpenPopup={handleOpenPopup}
