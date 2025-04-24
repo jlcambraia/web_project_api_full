@@ -10,8 +10,9 @@ import { useContext } from "react";
 
 export default function Card(props) {
   const { card, onClick, onCardLike, onCardDelete, saving } = props;
-
   const { currentUser } = useContext(CurrentUserContext);
+
+  const isLiked = card.likes.some((like) => like._id === currentUser._id);
 
   const imagePopup = {
     children: <ImagePopup card={card} />,
@@ -28,11 +29,7 @@ export default function Card(props) {
     ),
   };
 
-  const cardLikeButtonClassName = `grid__like-icon ${
-    card.likes.some((like) => like._id === currentUser._id)
-      ? "grid__like-icon_active"
-      : ""
-  }`;
+  const cardLikeButtonClassName = ` ${isLiked ? "grid__like-icon_active" : ""}`;
 
   function handleLikeClick() {
     onCardLike(card);
@@ -58,12 +55,7 @@ export default function Card(props) {
       </button>
       <div className="grid__card-footer">
         <h2 className="grid__card-title">{card.name}</h2>
-        <button
-          className="grid__card-footer-button"
-          onClick={() => {
-            handleLikeClick(card);
-          }}
-        >
+        <button className="grid__card-footer-button" onClick={handleLikeClick}>
           <img
             src={likeIcon}
             alt="Ícone de Curtir"
