@@ -112,7 +112,12 @@ function App() {
   }
 
   async function handleCardLike(card) {
-    const isLiked = card.likes.length > 0;
+    const isLiked = card.likes.some(
+      (likeId) => likeId === currentUser.data._id
+    );
+
+    console.log(card.likes);
+    console.log(currentUser.data._id);
 
     await api
       .updateLikeState(card._id, isLiked)
