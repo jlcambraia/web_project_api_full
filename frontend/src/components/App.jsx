@@ -116,9 +116,6 @@ function App() {
       (likeId) => likeId === currentUser.data._id
     );
 
-    console.log(card.likes);
-    console.log(currentUser.data._id);
-
     await api
       .updateLikeState(card._id, isLiked)
       .then((newCard) => {
