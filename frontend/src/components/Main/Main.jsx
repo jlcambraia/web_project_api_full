@@ -98,7 +98,6 @@ export default function Main(props) {
               <Card
                 key={card._id}
                 card={card}
-                isLiked={card.likes.some((id) => id === currentUser._id)}
                 onClick={onOpenPopup}
                 onCardLike={onCardLike}
                 onCardDelete={onCardDelete}
