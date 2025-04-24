@@ -3,7 +3,7 @@
 # Links do Projeto
 
 - **Frontend:** [https://around-full.mooo.com](https://around-full.mooo.com)
-- **Backend (API):** [https://api.around-full.mooo.com](https://api.around-full.mooo.com
+- **Backend (API):** [https://api.around-full.mooo.com](https://api.around-full.mooo.com)
 
 ## Descrição
 
