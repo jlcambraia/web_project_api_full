@@ -15,7 +15,7 @@ export default function Header({ isLoggedIn, onLogout, title, userData }) {
 
   function buttonNavigate() {
     const headerButton = document.querySelector(".header__button");
-    if (headerButton.textContent == "Entrar") {
+    if (headerButton.textContent == "Faça o Registro") {
       return navigate("/signup");
     }
     return navigate("/signin");
