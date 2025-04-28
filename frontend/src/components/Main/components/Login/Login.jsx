@@ -140,7 +140,7 @@ export default function Login({ handleLogin }) {
       <p className="login__sign-up-text">
         Ainda não é membro?{" "}
         <Link to="/signup" className="login__sign-up-link">
-          Inscreva-se aqui!
+          Registre-se aqui!
         </Link>
       </p>
     </div>
