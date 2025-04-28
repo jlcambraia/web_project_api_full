@@ -275,7 +275,7 @@ function App() {
               <>
                 <div className="body">
                   <div className="page">
-                    <Header userData={userData} title="Entrar" />
+                    <Header userData={userData} title="Faça o Registro" />
                     <Login handleLogin={handleLogin} />
                   </div>
                 </div>
