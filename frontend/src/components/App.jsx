@@ -36,12 +36,7 @@ function App() {
     avatar: avatarPlaceholder,
     name: "Carregando...",
     about: "Carregando...",
-    data: {
-      avatar: avatarPlaceholder,
-      name: "Carregando...",
-      about: "Carregando...",
-      email: "",
-    },
+    email: "",
   });
   const [saving, setSaving] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
