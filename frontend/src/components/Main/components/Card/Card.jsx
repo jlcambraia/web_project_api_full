@@ -16,6 +16,8 @@ export default function Card(props) {
     (likeId) => likeId === currentUser.data._id
   );
 
+  const isCardCreatedByCurrentUser = card.owner === currentUser.data._id;
+
   const imagePopup = {
     children: <ImagePopup card={card} />,
   };
@@ -47,16 +49,19 @@ export default function Card(props) {
         alt={`Imagem de ${card.name}`}
         onClick={() => onClick(imagePopup)}
       />
-      <button
-        className="grid__card-delete-button"
-        onClick={() => onClick(deleteConfirmationPopup)}
-      >
-        <img
-          src={deleteIcon}
-          alt="Ícone de Deletar"
-          className="grid__delete-icon"
-        />
-      </button>
+      {isCardCreatedByCurrentUser && (
+        <button
+          className="grid__card-delete-button"
+          onClick={() => onClick(deleteConfirmationPopup)}
+        >
+          <img
+            src={deleteIcon}
+            alt="Ícone de Deletar"
+            className="grid__delete-icon"
+          />
+        </button>
+      )}
+
       <div className="grid__card-footer">
         <h2 className="grid__card-title">{card.name}</h2>
         <button className="grid__card-footer-button" onClick={handleLikeClick}>
