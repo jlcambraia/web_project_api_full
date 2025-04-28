@@ -132,7 +132,7 @@ export default function Register({ handleRegistration }) {
           type="submit"
           disabled={!isFormValid || isSubmitting}
         >
-          {isSubmitting ? "Inscrevendo..." : "Inscrever-se"}
+          {isSubmitting ? "Registrando..." : "Registre-se"}
         </button>
       </form>
 
